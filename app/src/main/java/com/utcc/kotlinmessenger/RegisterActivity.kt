@@ -13,13 +13,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 //import com.google.firebase.storage.FirebaseStorage
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.android.synthetic.main.activity_register.*
 import java.util.*
 
 class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_register)
 
         register_button_register.setOnClickListener {
            performRegister()
@@ -28,7 +29,7 @@ class RegisterActivity : AppCompatActivity() {
         already_have_account_text_view.setOnClickListener {
             Log.d("RegisterActivity", "Try to show login activity")
 
-            // launch the login activity somehow
+            // launch the login activity
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
@@ -43,22 +44,22 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
     
-    //upload profile photo frome storage
+    //upload profile photo from storage
     var selectedPhotoUri: Uri? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK && data != null){
+        if (requestCode == 0 && resultCode == RESULT_OK && data != null){
             // proceed and check the selected image was...
             Log.d("RegisterActivity","Photo was selected")
 
             selectedPhotoUri = data.data
 
             val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, selectedPhotoUri)
+            selectphoto_imageview_register.setImageBitmap(bitmap)
 
-            val bitmapDrawable = BitmapDrawable(bitmap)
-            selectphoto_button_register.setBackgroundDrawable(bitmapDrawable)
+            selectphoto_button_register.alpha = 0f
         }
     }
 
@@ -121,6 +122,11 @@ class RegisterActivity : AppCompatActivity() {
         ref.setValue(user)
             .addOnSuccessListener {
                 Log.d("RegisterActivity", "Finally we saved the user to Firebase Database")
+
+                // launch the lates messages activity
+                val intent = Intent(this, LatestMessagesActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK.or(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
             }
             .addOnFailureListener {
                 Log.d("RegisterActivity", "Failed to set value to database: ${it.message}")
