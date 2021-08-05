@@ -86,6 +86,9 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this, "Successfully created user", Toast.LENGTH_SHORT).show()
 
                 uploadImageToFirebaseStorage()
+
+                val intent = Intent(this, LatestMessagesActivity::class.java)
+                startActivity(intent)
             }
             .addOnFailureListener{
                 Log.d("RegisterActivity", "Failed to create user: ${it.message}")
@@ -135,4 +138,6 @@ class RegisterActivity : AppCompatActivity() {
 
 }
 
-class User(val uid: String, val username: String, val profileImageUrl: String)
+class User(val uid: String, val username: String, val profileImageUrl: String){
+    constructor(): this("", "", "")
+}
